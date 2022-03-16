@@ -1,6 +1,7 @@
 package com.springehcache.controller;
 
 import com.springehcache.utils.EhcacheManagerUtil;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -21,9 +22,19 @@ class NumberControllerTest {
     @Autowired private MockMvc mockMvc;
     @Mock EhcacheManagerUtil ehcacheManagerUtil;
 
+    long start;
+    long end;
+
     @BeforeEach
     void setUp() {
         ehcacheManagerUtil.clearCacheAll();
+        start = System.currentTimeMillis();
+    }
+
+    @AfterEach
+    void checkTime() {
+        end = System.currentTimeMillis();
+        System.out.println("총 수행시간: " + (end-start));
     }
 
     @Test
@@ -38,7 +49,7 @@ class NumberControllerTest {
 
     @Test
     @DisplayName("캐시를 탔을 경우 속도 테스트")
-    void encache_Test() throws Exception {
+    void cache_Test() throws Exception {
         for (int i = 1; i < 5; i++) {
             mockMvc.perform(get("/number/cache/" + 30))
                     .andExpect(status().isOk())
